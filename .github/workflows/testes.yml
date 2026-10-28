@@ -1,0 +1,33 @@
+# Nome do workflow que aparecerá na aba "Actions" do GitHub
+name: Testes Java
+
+# Eventos que disparam o workflow
+on:
+  # Permite executar manualmente pela aba "Actions"
+  workflow_dispatch:
+  # Executa quando um Pull Request é criado, atualizado ou reaberto
+  pull_request:
+  # Executa em todo push (um merge também gera um push)
+  push:
+
+jobs:
+  testes:
+    # Sistema operacional da máquina virtual
+    runs-on: ubuntu-latest
+
+    steps:
+      # Baixa o código do repositório para a máquina virtual
+      - name: Baixar codigo
+        uses: actions/checkout@v4
+
+      # Instala e configura o Java 17 (distribuição Eclipse Temurin)
+      - name: Configurar Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+          cache: 'maven'
+
+      # Executa os testes unitários; se algum falhar, o workflow falha
+      - name: Executar testes
+        run: mvn test
